@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Loading…</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+    <h1 id="siteTitle">ASCII Text Generator</h1>
+
+    <div class="controls">
+      <label>Text
+        <textarea id="inputText" rows="3" placeholder="Type text here...">Make it BIG</textarea>
+      </label>
+      <div class="row">
+        <label>Draw character
+          <input id="drawChar" type="text" maxlength="1" value="█" />
+        </label>
+        <label>Size
+          <select id="sizeSelect">
+            <option value="small">Small (scale 1)</option>
+            <option value="medium">Medium (scale 2)</option>
+            <option value="large">Large (scale 4)</option>
+            <option value="huge" selected>Huge (scale 8)</option>
+          </select>
+        </label>
+        <label>Custom scale
+          <input id="scale" type="number" min="1" value="8" />
+        </label>
+        <label>Spacing
+          <input id="spacing" type="number" min="0" value="1" />
+        </label>
+      </div>
+      <div class="buttons">
+        <button id="renderBtn">Render</button>
+        <button id="copyBtn">Copy</button>
+        <a id="downloadLink" download="ascii.txt">Download</a>
+      </div>
+      <div style="margin-top:8px;color:var(--muted);font-size:13px;">
+        Tip: pick a block draw character like █ for dense output. Use the Custom scale to fine tune size.
+      </div>
+    </div>
+
+    <section>
+      <h2>Output</h2>
+      <pre id="output" class="output" tabindex="0"></pre>
+    </section>
+
+    <footer>
+      <small id="siteDescription">Built-in 5x7 font scaled up. Works offline — open this file in your browser.</small>
+    </footer>
+  </main>
+
+  <script>
+    // Load the site config (title, description, defaults, author) before loading the main script.
+    (async function(){
+      try {
+        const res = await fetch('site-config.json');
+        if (!res.ok) throw new Error('config not found');
+        const cfg = await res.json();
+
+        // expose the config globally so script.js can access author/other settings
+        window.SITE_CONFIG = cfg || {};
+
+        if (cfg.title) {
+          document.title = cfg.title;
+          const el = document.getElementById('siteTitle');
+          if (el) el.textContent = cfg.title;
+        }
+        if (cfg.description) {
+          const d = document.getElementById('siteDescription');
+          if (d) d.textContent = cfg.description;
+        }
+        if (cfg.default_draw_char) {
+          const drawInput = document.getElementById('drawChar');
+          if (drawInput && !drawInput.value) drawInput.value = cfg.default_draw_char;
+          if (drawInput && drawInput.value === '') drawInput.value = cfg.default_draw_char;
+        }
+      } catch (e) {
+        console.warn('Could not load site-config.json — using defaults.', e);
+        window.SITE_CONFIG = {};
+      } finally {
+        const s = document.createElement('script');
+        s.src = 'script.js';
+        document.body.appendChild(s);
+      }
+    })();
+  </script>
+</body>
+</html>
