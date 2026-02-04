@@ -1,0 +1,6 @@
+{
+  "title": "ASCII Text Generator",
+  "description": "Built-in 5x7 font scaled up. Works offline — open this file in your browser.",
+  "default_draw_char": "█",
+  "author": "nathanpaulgeorge"
+}
